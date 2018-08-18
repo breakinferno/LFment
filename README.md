@@ -15,7 +15,15 @@ DEFAULT_OPTIONS = {
     errorText: '',          // 失败文案
 }
 ``` -->
+# Start
 
+```javascript
+npm install
+
+npm run dev
+
+npm run build
+```
 
 # 数据库设计
 
@@ -259,9 +267,33 @@ options字段：
 
 ##  自定义样式
 
+#### 自定义头部样式
 
+renderHeader(state, instance)
+
+#### 自定义评论栏样式
+
+renderComments(state, instance)
+
+#### 自定义编辑框样式
+
+LFment.renderEditor(state, instance)
+
+#### 自定义底部样式
+
+LFment.renderFooter(state, instance)
+
+#### 自定义样式
+
+在这里决定你需要自定义的样式
+
+LFment.render(state, instance)
+
+#### 主题
 
 ##  自定义功能接口
+
+emmmm....
 
 ##  三方登录
 

@@ -1,6 +1,6 @@
 import { autorun, observable } from 'mobx'
 import defaultTheme from './theme/default'
-
+import {checktype} from '../uitls';
 
 const DEFAULT_OPTIONS = {
     theme: defaultTheme,    // 默认主题
@@ -47,4 +47,63 @@ class Comment {
     registApp(info) {
 
     }
+
+    __shortcut(App, param) {
+        checktype(param, 'undefined | null') && 
+    }
+
+    initApp(AppId, AppKey, AppSecret) {
+        
+        const initState = {
+            AppId: '',
+            AppKey: '',
+            AppSecret: ''
+        };
+
+        this.app = {
+            ...initState,
+            checktype(AppId, "string") ? AppId : ...AppId,
+            checktype(AppId, "string") ? AppKey : ...AppKey,
+            checktype(AppId, "string") ? AppSecret : ...AppSecret,
+
+        }
+        return this;
+    }
+    
+    initArticle(App, article) {
+        this.__shortcut(App, article);
+    }
+
+    login(App, user) {
+
+    }
+
+    register(App, user) {
+
+    }
+
+    sendComment(App, comment) {
+
+    }
+
+    deleteComment(App, commentId) {
+
+    }
+
+    getComent(App, commentId) {
+
+    }
+
+    getComments(App, articleId, page) {
+
+    }
+
+    getCommentsAboutMe(App, userId, page) {
+
+    }
+
+    like(App, commentId) {
+
+    }
+
 }
