@@ -31,8 +31,9 @@
     "userId":                   // 用户ID
     "targetId":                 // 评论对象ID
     "content":                  // 评论内容
-    "time":                     // 评论时间
-    "payload": {
+    "createdTime":                     // 评论时间
+    "updateTime":
+    "extra": {
         "user": {
             "avatar":
             "nickname":
@@ -65,9 +66,15 @@
 }
 ```
 
+#### 0. 初始化
+
+使用App对象来初始化
+
+**`LFment.init(App)`**
+
 #### 1. 发送评论
 
-**`LFment.sendComment(App, Comment)`**
+**`LFment.sendComment(Comment)`**
 
 **Comment组成部分：**
 
@@ -77,7 +84,7 @@
     "userId": "",          // 必须     
     "content": "测试",      // 内容          // 必须
     "time": "1233223323",   // 发送时间      // 必须
-    "payload"：             // 自定义信息 对照数据表结构
+    "extra"：             // 自定义信息 对照数据表结构
 }
 ```
 
@@ -85,7 +92,11 @@
 
 #### 2. 删除评论
 
-**`LFment.deleteComment(App, commentId)`**
+**`LFment.deleteComment(commentId)`**
+
+删除某个用户的所有评论
+
+**`LFment.deleteUserComments(userId)`**
 
 **PS**: 权限管理交由App处理
 
@@ -93,11 +104,11 @@
 
 获取单个评论
 
-**`LFment.getCommentById(App, commentId)`**
+**`LFment.getCommentById(commentId)`**
 
 获取目标评论
 
-**`LFment.getCommentsByTarget(App, targetId, options)`**
+**`LFment.getCommentsByTarget(targetId, options)`**
 
 没有options默认返回所有目标的评论
 
@@ -113,7 +124,7 @@ Options属性：
 
 获取用户评论
 
-**`LFment.getCommentsByUser(App, userId, options)`**
+**`LFment.getCommentsByUser(userId, options)`**
 
 Options属性：
 
@@ -124,29 +135,71 @@ Options属性：
 }
 ```
 
+#### 4. 设置extra部分的模型（范式）
 
+用于自定义自己应用的额外属性的模式，类似于Mongoose的Schema
 
-#### 4. 点赞
+定义的常见行为同schema定义一样
 
-点赞评论： **`LFment.like(App, commentId)`**
+**`LFment.defineExtraSchema(schema)`**
 
-<!-- 点赞文章： **`LFment.Like(App, articleId)`** -->
+默认模式：
 
-#### 5. 踩
+```javascript
+{
+    "user": {
+        "avatar": String
+        "nickname": String
+        "email": String
+        "ip": String
+    },
+    "like": Number
+    "unlike": Number
+    "anouymous": {
+        "type": Boolean,
+        "default": true
+    },
+    "reported": Boolean            // 是否被举报  true已经被举报
+    "reply": [ObjectId]               // 对于本评论的回复
+}
+```
 
-踩评论： **`LFment.unLike(App, commentId)`**
+`e.g:`
+```javascript
+const schema = {
+    like: Number,
+    unlike: Number
+}
+LFment.setExtraSchema(schema)
+```
 
-<!-- 踩文章： **`LFment.UnLike(App, articleId)`** -->
+#### 5. 更改额外属性
 
-#### 6. 举报
+**`LFment.setExtra(propName, value)`**
 
-**`LFment.report(App, commentId)`**
+支持逐层往下查找，找到同名属性立即设置并且返回
+
+<!-- #### 4. 点赞
+
+点赞评论： **`LFment.like(commentId)`**
+
+<!-- 点赞文章： **`LFment.Like(articleId)`** -->
+
+<!-- #### 5. 踩 -->
+
+<!-- 踩评论： **`LFment.unLike(commentId)`** -->
+
+<!-- 踩文章： **`LFment.UnLike(articleId)`** -->
+
+<!-- #### 6. 举报
+
+**`LFment.report(commentId)`** -->
 
 <!-- #### 10. 屏蔽用户
 
 屏蔽方式有昵称，邮箱，ip。可设置屏蔽时间。支持正则。
 
-**`LFment.shield(App, target)`**
+**`LFment.shield(target)`**
 
 target字段：
 
@@ -167,7 +220,7 @@ target字段：
 
 订阅邮件，分为三种情况，一种是文章变化邮件通知，一种是评论变化邮件通知， 一种是和自己有关的评论变化邮件通知
 
-**`LFment.subscribe(App, options)`**
+**`LFment.subscribe(options)`**
 
 options字段：
 
