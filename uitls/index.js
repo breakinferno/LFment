@@ -5,3 +5,7 @@ export const checktype = (target, dist) => {
     })
 
 }
+
+export const getType = (target) => {
+    return ({}).toString.call(target).slice(8, -1).toLowerCase();
+}
