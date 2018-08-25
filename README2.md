@@ -31,8 +31,9 @@
     "userId":                   // 用户ID
     "targetId":                 // 评论对象ID
     "content":                  // 评论内容
-    "time":                     // 评论时间
-    "payload": {
+    "ime":                     // 评论时间
+    "updateTime":
+    "ext": {
         "user": {
             "avatar":
             "nickname":
@@ -126,21 +127,21 @@ Options属性：
 
 
 
-#### 4. 点赞
+<!-- #### 4. 点赞
 
 点赞评论： **`LFment.like(App, commentId)`**
 
 <!-- 点赞文章： **`LFment.Like(App, articleId)`** -->
 
-#### 5. 踩
+<!-- #### 5. 踩 -->
 
-踩评论： **`LFment.unLike(App, commentId)`**
+<!-- 踩评论： **`LFment.unLike(App, commentId)`** --> -->
 
 <!-- 踩文章： **`LFment.UnLike(App, articleId)`** -->
 
-#### 6. 举报
+<!-- #### 6. 举报 -->
 
-**`LFment.report(App, commentId)`**
+<!-- **`LFment.report(App, commentId)`** -->
 
 <!-- #### 10. 屏蔽用户
 
@@ -183,4 +184,4 @@ options字段：
 
 - [] 客户端简单实现
 - [] 客户端评论凭证
-- [] 三方登录
+<!-- - [] 三方登录 -->
