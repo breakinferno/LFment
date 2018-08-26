@@ -1,4 +1,4 @@
-import { autorun, observable } from 'mobx'
+// import { autorun, observable } from 'mobx'
 import defaultTheme from './theme/default'
 import {checktype} from '../uitls';
 

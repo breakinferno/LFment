@@ -1,7 +1,6 @@
 import axios from 'axios';
-import constant from '../constant';
+import * as constant from './constant';
 import config from './config';
-import { copyFile } from 'fs';
 
 
 const baseConfig ={
@@ -84,8 +83,10 @@ const baseConfig ={
     maxRedirects: 5, // 默认的
     // `httpAgent` 和 `httpsAgent` 分别在 node.js 中用于定义在执行 http 和 https 时使用的自定义代理。允许像这样配置选项：
     // `keepAlive` 默认没有启用
-    httpAgent: new http.Agent({ keepAlive: true }),
-    httpsAgent: new https.Agent({ keepAlive: true }),
+
+    // httpAgent: new http.Agent({ keepAlive: true }),
+    // httpsAgent: new https.Agent({ keepAlive: true }),
+
     // 'proxy' 定义代理服务器的主机名称和端口
     // `auth` 表示 HTTP 基础验证应当用于连接代理，并提供凭据
     // 这将会设置一个 `Proxy-Authorization` 头，覆写掉已有的通过使用 `header` 设置的自定义 `Proxy-Authorization` 头。
@@ -99,8 +100,8 @@ const baseConfig ={
     },
     // `cancelToken` 指定用于取消请求的 cancel token
     // （查看后面的 Cancellation 这节了解更多）
-    cancelToken: new CancelToken(function (cancel) {
-    })
+    // cancelToken: new CancelToken(function (cancel) {
+    // })
 };
 
 const sendRequest = (config) => {

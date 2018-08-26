@@ -1,8 +1,8 @@
 'use strict'
 
-import cnst from '../constant';
-import utils from '../uitls';
-import * as service from './service';
+import cnst from './constant';
+import utils from './utils';
+import service from './service';
 import univerlify from 'universalify';
 
 // fake shema constructor
@@ -10,7 +10,7 @@ function ObjectId() {}
 
 function Mixed() {}
 
-class LFment {
+export default class LFment {
     constructor(Appkey, AppSecret) {
         this.App = {};
         this.config = {};
@@ -60,7 +60,7 @@ class LFment {
 
     sendComment(comment) {
         let lackPropName;
-        const requestPropName = ['targetId', 'userId', 'content', 'time'];
+        const requestPropName = ['targetId', 'userId', 'content', 'createdTime', 'updatedTime'];
         let isStandar = requestPropName.every(propName => {
             if (propName in comment) {
                 return true;
@@ -71,7 +71,8 @@ class LFment {
         if (!isStandar) {
             throw new Error(`评论数据格式不正确，缺少参数${lackPropName}`)
         }
-        return universalify.fromPromise(service.sendComment(data));
+        // return univerlify.fromPromise(service.sendComment(comment));
+        return service.sendComment(comment);
     }
 
     deleteCommentById(commentId) {
