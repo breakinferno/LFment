@@ -1,10 +1,10 @@
-export const SERVER_URL = 'localhost:8800/api';
+exports.SERVER_URL = 'http://127.0.0.1:8800/api/';
 // App签名相关接口
 
 // 请求接口
-export const ADD_COMMENT_URL = 'comments';
-export const DELETE_COMMENT_URL = 'comments';
-export const GET_COMMENTS_URL = 'comments';
-export const DEFINE_EXTRA_SCHEMA = 'extra';
-export const UPDATE_EXTRA = 'comments';
+exports.ADD_COMMENT_URL = '/comments';
+exports.DELETE_COMMENT_URL = '/comments';
+exports.GET_COMMENTS_URL = '/comments';
+exports.DEFINE_EXTRA_SCHEMA = '/extra';
+exports.UPDATE_EXTRA = '/comments';
 

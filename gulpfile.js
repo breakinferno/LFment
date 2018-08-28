@@ -35,5 +35,7 @@ gulp.task('develop', function () {
         })
 })
 
-gulp.task('svr', ['convertJS', 'develop', 'watch'])
+gulp.task('sdk', ['convertJS', 'watch']);
+
+gulp.task('svr', ['develop'])
 // gulp.task('svr', ['develop']);

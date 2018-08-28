@@ -1,16 +1,14 @@
 'use strict'
 
-import cnst from './constant';
-import utils from './utils';
-import service from './service';
-import univerlify from 'universalify';
+const utils = require('./utils');
+const service = require('./service');
 
 // fake shema constructor
 function ObjectId() {}
 
 function Mixed() {}
 
-export default class LFment {
+class LFment {
     constructor(Appkey, AppSecret) {
         this.App = {};
         this.config = {};
@@ -58,6 +56,10 @@ export default class LFment {
         return false;
     }
 
+    __test() {
+        return service.__test();
+    }
+
     sendComment(comment) {
         let lackPropName;
         const requestPropName = ['targetId', 'userId', 'content', 'createdTime', 'updatedTime'];
@@ -69,22 +71,21 @@ export default class LFment {
             return false;
         })
         if (!isStandar) {
-            throw new Error(`评论数据格式不正确，缺少参数${lackPropName}`)
+            return Promise.reject((`评论数据格式不正确，缺少参数${lackPropName}`))
         }
-        // return univerlify.fromPromise(service.sendComment(comment));
         return service.sendComment(comment);
     }
 
     deleteCommentById(commentId) {
-        return univerlify.fromPromise(service.deleteComment(commentId))
+        return service.deleteComment(commentId)
     }
 
     deleteUserComments(userId) {
-        return univerlify.fromPromise(service.deleteUserComments(userId));
+        return service.deleteUserComments(userId);
     }
 
     getCommentById(commentId) {
-        return univerlify.fromPromise(service.getCommentById(commentId));
+        return service.getCommentById(commentId);
     }
 
     getCommentByTarget(targetId, options) {
@@ -95,7 +96,7 @@ export default class LFment {
                 return obj;
             }, {});
         }
-        return univerlify.fromPromise(service.getCommentByTarget(targetId, options));
+        return service.getCommentByTarget(targetId, options);
     }
 
     getCommentByUser(userId, options) {
@@ -106,7 +107,7 @@ export default class LFment {
                 return obj;
             }, {});
         }
-        return univerlify.fromPromise(service.getCommentByTarget(userId, options));
+        return service.getCommentByTarget(userId, options);
     }
 
     /**
@@ -153,7 +154,7 @@ export default class LFment {
 
     defineExtraSchema(schma) {
         this.__checkSchma(schma);
-        return univerlify.fromPromise(service.defineExtraSchema(schma)); 
+        return service.defineExtraSchema(schma); 
     }
 
     setExtra(propName,value) {
@@ -165,6 +166,8 @@ export default class LFment {
         } else {
             data = propName;
         }
-        return univerlify.fromPromise(service.setExtra(data));
+        return service.setExtra(data);
     }
 }
+
+module.exports = LFment
