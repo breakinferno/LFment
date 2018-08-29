@@ -165,13 +165,14 @@ const asyncDima = (promise) => {
         .catch(err => [err]);
 }
 
+// dima增加一层处理层
 const asyncTask = async (asyncFunc, resulter, catcher) => {
     const [err, res] = await asyncDima(asyncFunc);
     let rt;
     if (err) {
-        rt = catcher(err);
+        typeof catcher === 'function' ? rt = catcher(err) : rt = Promise.reject(err);
     } else {
-        rt = resulter(res);
+        typeof resulter === 'function' ? rt = resulter(res) : rt = Promise.resolve(res);
     }
     return await asyncDima(rt);
 }
