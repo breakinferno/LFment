@@ -1,8 +1,8 @@
 const axios = require('axios');
 const constant =  require('./constant');
-const logger = require('./utils').logger;
+const {logger, genSignature, encryptData} = require('./utils');
 // import config from './config';
-
+const uuid = require('node-uuid').v4
 
 const baseConfig ={
     // `url` 是用于请求的服务器 URL
@@ -25,7 +25,7 @@ const baseConfig ={
     //     return data;
     // }],
     // `headers` 是即将被发送的自定义请求头
-    headers: {'X-Requested-With': 'XMLHttpRequest'},
+    headers: {'X-Requested-With': 'XMLHttpRequest', 'X-Requested-ID': uuid()},
     // `params` 是即将与请求一起发送的 URL 参数
     // 必须是一个无格式对象(plain object)或 URLSearchParams 对象
     params: {},
@@ -57,8 +57,8 @@ const baseConfig ={
     // 这将设置一个 `Authorization` 头，覆写掉现有的任意使用 `headers` 设置的自定义 `Authorization`头
     // base64编码。。。。atob可以解码
     auth: {
-        username: 'janedoe',
-        password: 's00pers3cret'
+        username: 'luffy',
+        password: 'orz'
     },
     // `responseType` 表示服务器响应的数据类型，可以是 'arraybuffer', 'blob', 'document', 'json', 'text', 'stream'
     responseType: 'json', // 默认的
@@ -105,15 +105,6 @@ const baseConfig ={
     // cancelToken: new CancelToken(function (cancel) {
     // })
 };
-
-const sendRequest = (config) => {
-    let options = {
-        ...baseConfig,
-        ...config
-    };
-    console.log(options);
-    return axios(options)
-}
 
 // 结果处理
 const handleResult = (response) => {
@@ -178,43 +169,105 @@ const asyncTask = async (asyncFunc, resulter, catcher) => {
 }
 /** 封装结束 */
 
-const service = {
-    __setAuth: (auth) => {
+/**
+ * 数据处理，对每个value进行加密,对原文进行签名
+ */
+const dataHandler = (data) => {
+    const nData = Object.keys(data).reduce((d, key) => {
+        d[key] = encryptData(data[key]);
+        return d;
+    }, {});
+    nData['signature'] = genSignature({
+        ...data,
+        appkey: this.auth.AppKey,
+        version: '1.0',
+        format: 'json'
+    }, service.auth.AppSecret); 
+    return nData; 
+}
+
+// 玩的是个蛇皮，改成类吧以后
+class Service {
+
+    constructor() {
+        this.auth = {
+            username: 'luffy',
+            password: 'orz'
+        };
+    }
+    __setAuth (auth) {
         baseConfig.auth = {
-            ...baseConfig.auth,
-            ...auth
+            username: auth.AppKey,
+            password: auth.AppSecret
         }
-    },
-    __test: () => {
+    }
+
+    __test() {
         const config = {
             url: 'https://api.coindesk.com/v1/bpi/currentprice.json',
             method: 'get'
         };
-        return asyncTask(sendRequest(config), handleResult, handleErr);
-    },
-    sendComment : (data) => {
+        return asyncTask(this.sendRequest(config), handleResult, handleErr);
+    }
+
+    /**
+     * 请求的统一处理
+     * @param {object} config 请求的参数
+     */
+    sendRequest(config) {
+        let options = {
+            ...baseConfig,
+            ...config
+        };
+        let {method, data, params} = options;
+        switch(method) {
+            case 'get':           
+                options.params = dataHandler(params);
+            break;
+            case 'post':
+                options.data = dataHandler(data);
+            break;
+            case 'put':
+                options.data = dataHandler(data);
+            break;
+            case 'delete':
+                options.params = dataHandler(params);
+            break;
+            case 'patch':
+                options.data = dataHandler(data);
+            break;
+            default:
+                Promise.reject("请求方法不正确");
+        }
+        return axios(options)
+    }
+
+    sendComment(data) {
         // axios.post(constant.ADD_COMMENT_URL, data);
         const config = {
             url: constant.ADD_COMMENT_URL,
             method: 'post',
             data
         };
-        // return sendRequest(config).then(handleResult).catch(handleErr);
-        return asyncTask(sendRequest(config), handleResult, handleErr);
-    },
-    deleteCommentById : (commentId) => {
+        // return this.sendRequest(config).then(handleResult).catch(handleErr);
+        return asyncTask(this.sendRequest(config), handleResult, handleErr);
+    }
+
+    deleteCommentById(commentId){
         const config = {
             url: `${constant.DELETE_COMMENT_URL}/${commentId}`
         };
-        return asyncTask(sendRequest(config), handleResult, handleErr);
-    },
-    getCommentById : (commentId) => {
+        return asyncTask(this.sendRequest(config), handleResult, handleErr);
+    }
+
+    getCommentById(commentId) {
         const config = {
             url: `${constant.GET_COMMENTS_URL}/${commentId}`,
         };
-        return asyncTask(sendRequest(config), handleResult, handleErr);
-    },
-    deleteUserComments: (userId) => {
+        return asyncTask(this.sendRequest(config), handleResult, handleErr);
+    }
+
+    deleteUserComments(userId) {
         const config = {
             url: constant.DELETE_COMMENT_URL,
             method: 'delete',
@@ -222,9 +275,10 @@ const service = {
                 userId
             }
         }
-        return asyncTask(sendRequest(config), handleResult, handleErr);
-    },
-    getCommentByTarget: (targetId, options) => {
+        return asyncTask(this.sendRequest(config), handleResult, handleErr);
+    }
+
+    getCommentByTarget(targetId, options) {
         const config = {
             url: constant.GET_COMMENTS_URL,
             params: {
@@ -232,9 +286,10 @@ const service = {
                 ...options
             }
         }
-        return asyncTask(sendRequest(config), handleResult, handleErr);
-    },
-    getCommentByUser: (userId, options) => {
+        return asyncTask(this.sendRequest(config), handleResult, handleErr);
+    }
+
+    getCommentByUser(userId, options) {
         const config = {
             url: constant.GET_COMMENTS_URL,
             params: {
@@ -242,25 +297,27 @@ const service = {
                 ...options
             }
         }
-        return asyncTask(sendRequest(config), handleResult, handleErr);
-    },
-    defineExtraSchema: (data) => {
+        return asyncTask(this.sendRequest(config), handleResult, handleErr);
+    }
+
+    defineExtraSchema(data) {
         const config = {
             url: constant.DEFINE_EXTRA_SCHEMA,
             method: 'post',
             data
         };
-        return asyncTask(sendRequest(config), handleResult, handleErr);
-    },
-    setExtra: (data) => {
+        return asyncTask(this.sendRequest(config), handleResult, handleErr);
+    }
+
+    setExtra(data) {
         const config = {
             url: constant.UPDATE_EXTRA,
             method: 'patch',
             data
         };
-        return asyncTask(sendRequest(config), handleResult, handleErr);   
+        return asyncTask(this.sendRequest(config), handleResult, handleErr);   
     }
 }
 
-module.exports = service
+module.exports = Service
 

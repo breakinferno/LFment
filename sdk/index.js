@@ -1,8 +1,8 @@
 'use strict'
 
 const utils = require('./utils');
-const service = require('./service');
-
+const Service = require('./service');
+const service = new Service();
 // fake shema constructor
 function ObjectId() {}
 
@@ -27,7 +27,6 @@ class LFment {
                 AppKey,
                 AppSecret
             }
-            return;
         }
 
         if (utils.checkType(AppKey, 'Object')) {
