@@ -5,10 +5,10 @@ module.exports = {
   context: path.join(__dirname, 'sdk'),
   entry: './index.js',
   devtool: 'source-map',
-  mode: 'development',
+  mode: 'production',
   output: {
     path: path.join(__dirname, 'dist'),
-    filename: 'sdk.js',
+    filename: '[name].sdk.js',
     publicPath: '/dist/',
   },
   module: {
@@ -19,5 +19,13 @@ module.exports = {
         loader: 'babel-loader',
       },
     ],
+  },
+  optimization: {
+    splitChunks: {
+      chunks: 'all'
+    }
+  },
+  performance: {
+    hints: false
   }
 }

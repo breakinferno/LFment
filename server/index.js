@@ -1,6 +1,6 @@
 const Koa = require('koa')
 const app = new Koa()
-const SDK = require('../sdk/index')
+const SDK = require('../sdk/index').sdk
 console.log(SDK);
 // const axios = require('axios');
 const sdk = new SDK('key', 'secret');
@@ -18,7 +18,10 @@ const send = async (ctx) => {
         updatedTime: Date.now()
     })
     if (err) {
-        ctx.body = err;
+        ctx.body = {
+            err: err,
+            code: -100
+        };
         return;
     }
     ctx.body = result.data;
@@ -154,25 +157,6 @@ const setExtra = async (ctx) => {
 app.use( async ( ctx ) => {
     console.log('mdzz')
     const {url} = ctx;
-    // 路径如下
-    // send
-
-    // deleteById
-
-    // deleteByUser
-
-    // deleteByTarget
-
-    // getById
-
-    // getByUser
-
-    // getByTarget
-
-    // updateExtra
-
-    // setExtra
-    
     switch(urlHanlder(url)) {
         case 'send':
         await send(ctx);
