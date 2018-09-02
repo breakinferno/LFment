@@ -1,7 +1,14 @@
 const axios = require('axios');
+const RSA = require('node-rsa')
 const constant =  require('./constant');
-const {logger, genSignature, encryptData} = require('./utils');
-// import config from './config';
+const {logger, signer, verifier, encryptData} = require('./utils');
+const pubData = `-----BEGIN PUBLIC KEY-----
+MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCKIzX+dU/e+xot+qlHoDbweVaW
+MUjGUVCsUTbT/y8ifsNN1NnQ9vCCBGr+vmM+cTqInYVWxM3W2udc0eOD9a33nybF
+o8W7rwKmK1ZgE0nt5eHe1q45knGKNelB8FiDKteVTEGHDVNCGc8nkMvQMSd2AZtj
+Ea0KPY39RCqOWJlIfQIDAQAB
+-----END PUBLIC KEY-----`
+const pubKEY = new RSA(pubData, 'pkcs8-public-pem')// import config from './config';
 const uuid = require('node-uuid').v4
 
 const baseConfig ={
@@ -170,35 +177,20 @@ const asyncTask = async (asyncFunc, resulter, catcher) => {
 /** 封装结束 */
 
 /**
- * 数据处理，对每个value进行加密,对原文进行签名
+ * 服务对象，实际的请求发起者
  */
-const dataHandler = (data) => {
-    const nData = Object.keys(data).reduce((d, key) => {
-        d[key] = encryptData(data[key]);
-        return d;
-    }, {});
-    nData['signature'] = genSignature({
-        ...data,
-        appkey: this.auth.AppKey,
-        version: '1.0',
-        format: 'json'
-    }, service.auth.AppSecret); 
-    return nData; 
-}
-
-// 玩的是个蛇皮，改成类吧以后
 class Service {
 
     constructor() {
         this.auth = {
-            username: 'luffy',
-            password: 'orz'
+            AppKey: '',
+            AppSecret: ''
         };
     }
     __setAuth (auth) {
-        baseConfig.auth = {
-            username: auth.AppKey,
-            password: auth.AppSecret
+        this.auth = {
+            ...this.auth,
+            ...auth
         }
     }
 
@@ -208,6 +200,22 @@ class Service {
             method: 'get'
         };
         return asyncTask(this.sendRequest(config), handleResult, handleErr);
+    }
+
+    /**
+     * 数据处理者，生成加密之后的数据和签名
+     * @param {any}} data 需要进行处理的数据
+     */
+    dataHandler(data) {
+        // 添加AppKey字段
+        data.appkey = this.auth.AppKey
+        data.timestamp = Date.now()
+        const nData = Object.keys(data).reduce((d, key) => {
+            d[key] = encryptData(pubKEY, data[key]);
+            return d;
+        }, {});
+        nData['signature'] = signer(data, this.auth.AppSecret); 
+        return nData; 
     }
 
     /**
@@ -222,19 +230,19 @@ class Service {
         let {method, data, params} = options;
         switch(method) {
             case 'get':           
-                options.params = dataHandler(params);
+                options.params = this.dataHandler(params);
             break;
             case 'post':
-                options.data = dataHandler(data);
+                options.data = this.dataHandler(data);
             break;
             case 'put':
-                options.data = dataHandler(data);
+                options.data = this.dataHandler(data);
             break;
             case 'delete':
-                options.params = dataHandler(params);
+                options.params = this.dataHandler(params);
             break;
             case 'patch':
-                options.data = dataHandler(data);
+                options.data = this.dataHandler(data);
             break;
             default:
                 Promise.reject("请求方法不正确");
@@ -242,6 +250,10 @@ class Service {
         return axios(options)
     }
 
+    /**
+     * 发送评论
+     * @param {any} data 评论数据
+     */
     sendComment(data) {
         // axios.post(constant.ADD_COMMENT_URL, data);
         const config = {
@@ -253,20 +265,30 @@ class Service {
         return asyncTask(this.sendRequest(config), handleResult, handleErr);
     }
 
+    /**
+     * 根据评论id删除评论
+     * @param {string} commentId 评论id
+     */
     deleteCommentById(commentId){
         const config = {
             url: `${constant.DELETE_COMMENT_URL}/${commentId}`
         };
         return asyncTask(this.sendRequest(config), handleResult, handleErr);
     }
-
+    /**
+     * 根据评论id获取评论
+     * @param {string} commentId 评论id
+     */
     getCommentById(commentId) {
         const config = {
             url: `${constant.GET_COMMENTS_URL}/${commentId}`,
         };
         return asyncTask(this.sendRequest(config), handleResult, handleErr);
     }
-
+    /**
+     * 根据用户id删除评论
+     * @param {string} userId 评论id
+     */
     deleteUserComments(userId) {
         const config = {
             url: constant.DELETE_COMMENT_URL,
@@ -277,7 +299,10 @@ class Service {
         }
         return asyncTask(this.sendRequest(config), handleResult, handleErr);
     }
-
+    /**
+     * 根据目标对象id获取评论
+     * @param {string} targetId 评论id
+     */
     getCommentByTarget(targetId, options) {
         const config = {
             url: constant.GET_COMMENTS_URL,
@@ -289,6 +314,11 @@ class Service {
         return asyncTask(this.sendRequest(config), handleResult, handleErr);
     }
 
+    /**
+     * 根据用户id和条件获取评论
+     * @param {string} userId 用户id
+     * @param {object} options 设置参数
+     */
     getCommentByUser(userId, options) {
         const config = {
             url: constant.GET_COMMENTS_URL,
@@ -300,19 +330,26 @@ class Service {
         return asyncTask(this.sendRequest(config), handleResult, handleErr);
     }
 
-    defineExtraSchema(data) {
+    /**
+     * 只会更新extra字段，而不会更改字段
+     * @param {any} data 更新数据   
+     */
+    updateExtra(data) {
         const config = {
-            url: constant.DEFINE_EXTRA_SCHEMA,
-            method: 'post',
+            url: constant.UPDATEEXTRA,
+            method: 'patch',
             data
         };
         return asyncTask(this.sendRequest(config), handleResult, handleErr);
     }
-
+    /**
+     * 替换extra内容
+     * @param {any} data 更新数据   
+     */
     setExtra(data) {
         const config = {
-            url: constant.UPDATE_EXTRA,
-            method: 'patch',
+            url: constant.SET_EXTRA,
+            method: 'put',
             data
         };
         return asyncTask(this.sendRequest(config), handleResult, handleErr);   

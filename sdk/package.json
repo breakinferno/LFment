@@ -1,0 +1,17 @@
+{
+  "name": "LFSDK",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "sdk": "webpack --config webpack.sdk.config.js --progress --colors"
+  },
+  "keywords": [],
+  "author": "breakinferno",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "node-rsa": "^1.0.1",
+    "node-uuid": "^1.4.8"
+  }
+}

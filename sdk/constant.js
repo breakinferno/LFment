@@ -5,6 +5,6 @@ exports.SERVER_URL = 'http://127.0.0.1:8800/api/';
 exports.ADD_COMMENT_URL = '/comments';
 exports.DELETE_COMMENT_URL = '/comments';
 exports.GET_COMMENTS_URL = '/comments';
-exports.DEFINE_EXTRA_SCHEMA = '/extra';
+exports.SETEXTRA = '/comments';
 exports.UPDATE_EXTRA = '/comments';
 
