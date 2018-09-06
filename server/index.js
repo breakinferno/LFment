@@ -18,10 +18,7 @@ const send = async (ctx) => {
         updatedTime: Date.now()
     })
     if (err) {
-        ctx.body = {
-            err: err,
-            code: -100
-        };
+        ctx.body = err
         return;
     }
     ctx.body = result.data;
