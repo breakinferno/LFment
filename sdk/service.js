@@ -32,7 +32,7 @@ const baseConfig ={
     //     return data;
     // }],
     // `headers` 是即将被发送的自定义请求头
-    headers: {'X-Requested-With': 'XMLHttpRequest', 'X-Requested-ID': uuid()},
+    headers: {'X-Requested-With': 'XMLHttpRequest'},
     // `params` 是即将与请求一起发送的 URL 参数
     // 必须是一个无格式对象(plain object)或 URLSearchParams 对象
     params: {},
@@ -225,6 +225,10 @@ class Service {
     sendRequest(config) {
         let options = {
             ...baseConfig,
+            headers: {
+                ...baseConfig.headers,
+                'X-Requested-ID': uuid()
+            },
             ...config
         };
         let {method, data, params} = options;
