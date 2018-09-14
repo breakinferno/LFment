@@ -109,7 +109,14 @@ const salt = (salt, secret, alg) => {
  * @param {NodeRSA} key 加密对象
  * @param {any} data 加密数据   
  */
-exports.encryptData = (key, data) => {
+exports.encryptData = function rencrypt(key, data) {
+    if (typeof data === 'object') {
+        let rt = {}
+        Object.keys(data).forEach(k => {
+            rt[k] = rencrypt(key, data[k])
+        })
+        return rt
+    }
     return key.encrypt(data, 'base64', 'utf-8');
 }
 

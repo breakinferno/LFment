@@ -52,7 +52,7 @@ const baseConfig ={
     },
     // `timeout` 指定请求超时的毫秒数(0 表示无超时时间)
     // 如果请求话费了超过 `timeout` 的时间，请求将被中断
-    timeout: 4000,
+    timeout: 10000,
     // `withCredentials` 表示跨域请求时是否需要使用凭证
     withCredentials: false, // 默认的
     // `adapter` 允许自定义处理请求，以使测试更轻松
@@ -273,9 +273,13 @@ class Service {
      * 根据评论id删除评论
      * @param {string} commentId 评论id
      */
-    deleteCommentById(commentId){
+    deleteComment(commentId){
         const config = {
-            url: `${constant.DELETE_COMMENT_URL}/${commentId}`
+            url: `${constant.DELETE_COMMENT_URL}`,
+            method: 'delete',
+            params: {
+                commentId
+            }
         };
         return asyncTask(this.sendRequest(config), handleResult, handleErr);
     }
@@ -285,7 +289,10 @@ class Service {
      */
     getCommentById(commentId) {
         const config = {
-            url: `${constant.GET_COMMENTS_URL}/${commentId}`,
+            url: `${constant.GET_COMMENTS_URL}`,
+            params: {
+                commentId
+            }
         };
         return asyncTask(this.sendRequest(config), handleResult, handleErr);
     }
@@ -303,6 +310,20 @@ class Service {
         }
         return asyncTask(this.sendRequest(config), handleResult, handleErr);
     }
+
+    /**
+     * 
+     */
+    deleteTargetComments(targetId) {
+        const config = {
+            url: constant.DELETE_COMMENT_URL,
+            method: 'delete',
+            params: {
+                targetId
+            }
+        }
+    }
+
     /**
      * 根据目标对象id获取评论
      * @param {string} targetId 评论id

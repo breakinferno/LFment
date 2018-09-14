@@ -72,18 +72,37 @@ class LFment {
     }
 
     deleteCommentById(commentId) {
+        if (!commentId) {
+            return Promise.reject('请传人相关参数')
+        }
         return service.deleteComment(commentId)
     }
 
-    deleteUserComments(userId) {
+    deleteCommentsByUser(userId) {
+        if (!userId) {
+            return Promise.reject('请传人相关参数')
+        }
         return service.deleteUserComments(userId);
     }
 
+    deleteCommentsByTarget(targetId) {
+        if (!targetId) {
+            return Promise.reject('请传人相关参数')
+        }
+        return service.deleteTargetComments(targetId);
+    }
+
     getCommentById(commentId) {
+        if (!commentId) {
+            return Promise.reject('请传人相关参数')
+        }
         return service.getCommentById(commentId);
     }
 
     getCommentByTarget(targetId, options) {
+        if (!targetId) {
+            return Promise.reject('请传人相关参数')
+        }
         if (utils.checkType(options, 'object')) {
             let valideProps = ['count', 'group', 'sort'];
             options = valideProps.reduce((obj, prop) => {
@@ -95,6 +114,9 @@ class LFment {
     }
 
     getCommentByUser(userId, options) {
+        if (!userId) {
+            return Promise.reject('请传人相关参数')
+        }
         if (utils.checkType(options, 'object')) {
             let valideProps = ['count', 'group', 'sort'];
             options = valideProps.reduce((obj, prop) => {
@@ -102,57 +124,20 @@ class LFment {
                 return obj;
             }, {});
         }
-        return service.getCommentByTarget(userId, options);
+        return service.getCommentByUser(userId, options);
     }
 
-    // /**
-    //  * 检查模式对象
-    //  * @param {object} schma 模式对象
-    //  */
-    // __checkSchma(schma) {
-    //     const types = ['Boolean', 'String', 'Number', 'ObjectId', 'Mixed'];
-    //     function recurse(target) {
-    //         for( let prop in target) {
-    //             if (target.hasOwnProperty(prop)) {
-    //                 switch(utils.getType(target[prop])) {
-    //                     case 'funtcion':
-    //                     if (!types.includes(target[prop].name)) {
-    //                         throw new Error('Schema 类别错误， 不存在%s此类型的数据', target[prop].name)
-    //                     }
-    //                     break;
-    //                     case 'object':
-    //                     if (target[prop].type) {
-    //                         if (utils.checkType(target[prop].type, 'function')) {
-    //                             if (!types.includes(target[prop].type.name)) {
-    //                                 throw new Error('Schema 类别错误， 不存在%s此类型的数据', target[prop].type.name)
-    //                             }
-    //                             continue;
-    //                         } else if (utils.checkType(target[prop].type, 'object')) {
-    //                             recurse(target[prop].type)
-    //                         } else {
-    //                             throw new Error('Schema对象的属性必须是函数或者对象')
-    //                         }
-    //                     } else {
-    //                         recurse(target[prop]);
-    //                     }
-    //                     break;
-    //                     default:
-    //                         throw new Error('Schema对象的属性必须是函数或者对象')
-    //                 }
-    //             }
-    //         }
-    //     }
-
-    //     recurse(schma);
-    //     return this;
-    // }
-
     setExtra(extra) {
-        // this.__checkSchma(schma);
+        if (!extra) {
+            return Promise.reject('请传人相关参数')
+        }
         return service.setExtra(extra); 
     }
 
     updateExtra(propName,value) {
+        if (!propName) {
+            return Promise.reject('请传人相关参数')
+        }
         let data;
         if (typeof value !== 'undefined') {
             data = {

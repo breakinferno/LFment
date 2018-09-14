@@ -3,10 +3,10 @@ const app = new Koa()
 const SDK = require('../sdk/index').sdk
 console.log(SDK);
 // const axios = require('axios');
-const sdk = new SDK('key', 'secret');
+const sdk = new SDK('ld2n7Myo+2rA/EYjrVeK4w==', 'BaH8uHyPTGz7WJAIB8IXIg==');
 
 const urlHanlder = (url) => {
-    return url === '/' ? 'send' : url.slice(1);
+    return url === '/' ? 'send' : url.split('?')[0].slice(1);
 }
 
 const send = async (ctx) => {
@@ -15,23 +15,22 @@ const send = async (ctx) => {
         'userId': 'fuckfuck',
         content: 'test eeste test',
         createdTime: Date.now(),
-        updatedTime: Date.now()
+        updatedTime: Date.now(),
+        extra: {
+            nickname: 'woca',
+            sex: 'male'
+        }
     })
     if (err) {
         ctx.body = err
         return;
     }
-    ctx.body = result.data;
+    ctx.body = result;
 }
 
 const deleteById = async (ctx) => {
-    let [err, result] = await sdk.sendComment({
-        'targetId': '2323',
-        'userId': 'fuckfuck',
-        content: 'test eeste test',
-        createdTime: Date.now(),
-        updatedTime: Date.now()
-    })
+    const {query} = ctx
+    let [err, result] = await sdk.deleteCommentById(query.id)
     if (err) {
         ctx.body = err;
         return;
@@ -40,13 +39,8 @@ const deleteById = async (ctx) => {
 }
 
 const deleteByUser = async (ctx) => {
-    let [err, result] = await sdk.sendComment({
-        'targetId': '2323',
-        'userId': 'fuckfuck',
-        content: 'test eeste test',
-        createdTime: Date.now(),
-        updatedTime: Date.now()
-    })
+    const {query} = ctx
+    let [err, result] = await sdk.deleteCommentsByUser(query.userId)
     if (err) {
         ctx.body = err;
         return;
@@ -56,13 +50,8 @@ const deleteByUser = async (ctx) => {
 
 
 const deleteByTarget = async (ctx) => {
-    let [err, result] = await sdk.sendComment({
-        'targetId': '2323',
-        'userId': 'fuckfuck',
-        content: 'test eeste test',
-        createdTime: Date.now(),
-        updatedTime: Date.now()
-    })
+    const {query} = ctx
+    let [err, result] = await sdk.deleteCommentsByTarget(query.targetId)
     if (err) {
         ctx.body = err;
         return;
@@ -72,13 +61,7 @@ const deleteByTarget = async (ctx) => {
 
 
 const getById = async (ctx) => {
-    let [err, result] = await sdk.sendComment({
-        'targetId': '2323',
-        'userId': 'fuckfuck',
-        content: 'test eeste test',
-        createdTime: Date.now(),
-        updatedTime: Date.now()
-    })
+    let [err, result] = await sdk.getCommentById(ctx.query.id)
     if (err) {
         ctx.body = err;
         return;
@@ -88,13 +71,8 @@ const getById = async (ctx) => {
 
 
 const getByUser = async (ctx) => {
-    let [err, result] = await sdk.sendComment({
-        'targetId': '2323',
-        'userId': 'fuckfuck',
-        content: 'test eeste test',
-        createdTime: Date.now(),
-        updatedTime: Date.now()
-    })
+    const {query} = ctx
+    let [err, result] = await sdk.getCommentByUser(query.userId)
     if (err) {
         ctx.body = err;
         return;
@@ -104,13 +82,8 @@ const getByUser = async (ctx) => {
 
 
 const getByTarget = async (ctx) => {
-    let [err, result] = await sdk.sendComment({
-        'targetId': '2323',
-        'userId': 'fuckfuck',
-        content: 'test eeste test',
-        createdTime: Date.now(),
-        updatedTime: Date.now()
-    })
+    const {query} = ctx
+    let [err, result] = await sdk.getCommentByTarget(query.targetId)
     if (err) {
         ctx.body = err;
         return;
@@ -120,12 +93,16 @@ const getByTarget = async (ctx) => {
 
 
 const updateExtra = async (ctx) => {
-    let [err, result] = await sdk.sendComment({
+    let [err, result] = await sdk.updateExtra({
         'targetId': '2323',
         'userId': 'fuckfuck',
         content: 'test eeste test',
         createdTime: Date.now(),
-        updatedTime: Date.now()
+        updatedTime: Date.now(),
+        extra: {
+            nickname: 'woca',
+            sex: 'male'
+        }
     })
     if (err) {
         ctx.body = err;
@@ -135,7 +112,7 @@ const updateExtra = async (ctx) => {
 }
 
 const setExtra = async (ctx) => {
-    let [err, result] = await sdk.sendComment({
+    let [err, result] = await sdk.setExtra({
         'targetId': '2323',
         'userId': 'fuckfuck',
         content: 'test eeste test',
@@ -152,7 +129,6 @@ const setExtra = async (ctx) => {
 
 
 app.use( async ( ctx ) => {
-    console.log('mdzz')
     const {url} = ctx;
     switch(urlHanlder(url)) {
         case 'send':
