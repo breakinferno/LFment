@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Send-Comment</title>
+</head>
+
+<body>
+    <!-- <form action="/send" method="POST"> -->
+    <div id="send">
+        <span>发送评论</span>
+        <div>
+            <label for="target">目标ID: </label><input name="target">
+            <br>
+            <label for="user">用户ID: </label><input name="user">
+            <br>
+            <label for="content">内容: </label><input name="content">
+            <br>
+            <button onclick="send()">发送</button>
+        </div>
+    </div>
+    <br>
+    <div id="get">
+        <span>获取评论</span>
+        <div>
+            <label for="target">根据目标ID获取: </label><input name="target"><button onclick="getComment(1)">获取</button>
+            <br>
+            <label for="user">根据用户ID: </label><input name="user"><button onclick="getComment(2)">获取</button>
+            <br>
+            <label for="content">根据评论ID: </label><input name="content"><button onclick="getComment(3)">获取</button>
+            <br>
+        </div>
+    </div>
+    <br>
+    <div id="delete">
+        <span>删除评论</span>
+        <div>
+            <label for="target">根据目标ID: </label><input name="target"><button onclick="deleteComment(1)">获取</button>
+            <br>
+            <label for="user">根据用户ID: </label><input name="user"><button onclick="deleteComment(2)">获取</button>
+            <br>
+            <label for="content">根据评论ID: </label><input name="content"><button onclick="deleteComment(3)">获取</button>
+            <br>
+        </div>
+    </div>
+    <br>
+    <!-- <input type="submit" value="Submit" /> -->
+    <!-- </form> -->
+    <div>结果</div>
+    <div id="result"></div>
+    <script src="/js/index.js"></script>
+    <script>
+        var axios = require('axios');
+        var iAxios = axios.create({
+            timeout: 100000
+        });
+        var dom = document.getElementById('result');
+        var reqs = document.querySelectorAll('#send input');
+        var getReqs = document.querySelectorAll('#get input');
+        var deleteReqs = document.querySelectorAll('#delete input');
+
+        function getTpl(result) {
+            var {
+                targetId,
+                userId,
+                content,
+                createdTime,
+                updatedTime
+            } = result;
+            tpl =
+                `
+                    <div><span>目标是：</span> ${targetId}<div>
+                    <div><span>使用者是：</span> ${userId}<div>
+                    <div><span>内容是：</span> ${content}<div>
+                    <div><span>创建时间是：</span> ${createdTime}<div>
+                    <div><span>更新时间是：</span> ${updatedTime}<div>
+                    <br>                        
+                `
+            return tpl
+        }
+
+        function addResult(result) {
+            var tpl = '';
+            if (Array.isArray(result)) {
+                result.forEach(res => {
+                    tpl += getTpl(res);
+                })
+            } else {
+                tpl = getTpl(result)
+            }
+
+            dom.innerHTML = tpl
+        }
+        // got('/send',)
+        var send = async () => {
+            var data = {
+                target: reqs[0].value,
+                user: reqs[1].value,
+                content: reqs[2].value
+            };
+            try {
+                var response = await iAxios.post('/send', {
+                    data,
+                });
+                console.log(response.data.data);
+                addResult(response.data.data)
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        var getComment = async (type) => {
+            var url = 'getById';
+            var params;
+            switch (type) {
+                case 1:
+                    url = `getByTarget?targetId=${getReqs[type-1].value}`;
+                    break;
+                case 2:
+                    url = `getByUser?userId=${getReqs[type-1].value}`;
+                    break;
+                case 3:
+                default:
+                    url = `getById?id=${getReqs[type-1].value}`
+            }
+            try {
+                var response = await iAxios.get(url)
+                console.log(response.data)
+                addResult(response.data)
+            } catch (error) {
+                console.log(error)
+            }
+        }
+
+        var deleteComment = async () => {
+            var url = 'deleteById';
+            var params;
+            switch (type) {
+                case 1:
+                    url = `deleteByTarget?targetId=${deleteReqs[type-1].value}`;
+                    break;
+                case 2:
+                    url = `deleteByUser?userId=${deleteReqs[type-1].value}`;
+                    break;
+                case 3:
+                default:
+                    url = `deleteById?id=${deleteReqs[type-1].value}`
+            }
+            try {
+                var response = await iAxios.get(url)
+                console.log(response.data)
+                addResult(response.data)
+            } catch (error) {
+                console.log(error)
+            }
+        }
+    </script>
+</body>
+
+</html>
