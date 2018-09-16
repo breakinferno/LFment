@@ -133,16 +133,13 @@ const getByTarget = async (ctx) => {
 
 
 const updateExtra = async (ctx) => {
+    if (ctx.method !== 'POST') {
+        throw new Error()
+    }
+    let postData = await parsePostData( ctx )
+    const {extra} = postData
     let [err, result] = await sdk.updateExtra({
-        'targetId': '2323',
-        'userId': 'fuckfuck',
-        content: 'test eeste test',
-        createdTime: Date.now(),
-        updatedTime: Date.now(),
-        extra: {
-            nickname: 'woca',
-            sex: 'male'
-        }
+        ...postData
     })
     if (err) {
         ctx.body = err;
@@ -152,12 +149,13 @@ const updateExtra = async (ctx) => {
 }
 
 const setExtra = async (ctx) => {
+    if (ctx.method !== 'POST') {
+        throw new Error()
+    }
+    let postData = await parsePostData( ctx )
+    const {extra} = postData
     let [err, result] = await sdk.setExtra({
-        'targetId': '2323',
-        'userId': 'fuckfuck',
-        content: 'test eeste test',
-        createdTime: Date.now(),
-        updatedTime: Date.now()
+        extra
     })
     if (err) {
         ctx.body = err;
