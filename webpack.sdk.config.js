@@ -3,13 +3,13 @@ const OpenBrowserPlugin = require('open-browser-webpack-plugin');
 
 module.exports = {
   context: path.join(__dirname, 'sdk'),
-  entry: './index.js',
+  entry: './src/index.js',
   devtool: 'source-map',
   mode: 'production',
   output: {
-    path: path.join(__dirname, 'dist'),
-    filename: '[name].sdk.js',
-    publicPath: '/dist/',
+    path: path.join(__dirname, 'sdk/lib'),
+    filename: 'sdk.min.js',
+    publicPath: '/lib/',
   },
   module: {
     rules: [

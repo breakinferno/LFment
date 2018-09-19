@@ -1,6 +1,6 @@
 node_modules
 package-lock.json
-*.js
 src
 lib/*.map
 lib/vendors*
+index.js
