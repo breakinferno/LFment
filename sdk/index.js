@@ -1,5 +1,5 @@
-const comments = require('./comment')
-const utils = require('./utils')
+const comments = require('./src/comment')
+const utils = require('./src/utils')
 
 exports.sdk = comments
 exports.utils = utils
