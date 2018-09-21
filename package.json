@@ -15,8 +15,11 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^0.18.0",
+    "browserify": "^16.2.2",
     "crypto-js": "^3.1.9-1",
+    "got": "^9.2.1",
     "koa": "^2.5.2",
+    "koa-static": "^5.0.0",
     "mobx": "^5.0.3",
     "node-rsa": "^1.0.1",
     "node-uuid": "^1.4.8",
