@@ -1,6 +1,7 @@
 const Koa = require('koa')
 const app = new Koa()
-const SDK = require('../sdk/entry').sdk
+const mdzz = require('../sdk/src/index')
+const SDK = require('../sdk/entry.js')
 console.log(SDK);
 // const axios = require('axios');
 const sdk = new SDK('ld2n7Myo+2rA/EYjrVeK4w==', 'BaH8uHyPTGz7WJAIB8IXIg==');

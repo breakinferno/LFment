@@ -1,4 +1,4 @@
-export default {
+module.exports = {
     timeout: 3000, // 延迟
     resDataFormat: 'json',
     cdn: true,      // 是否cdn

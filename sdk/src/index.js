@@ -1,6 +1,8 @@
-const comments = require('./src/comment')
-const utils = require('./src/utils')
+const comments = require('./comment')
+const utils = require('./utils')
 
-exports.sdk = comments
-exports.utils = utils
-exports.default = comments
+module.exports = {
+    sdk: comments,
+    utils: utils,
+    default: comments
+}

@@ -4,7 +4,7 @@
   "description": "",
   "main": "entry.js",
   "scripts": {
-    "sdk": "webpack --config webpack.sdk.config.js --progress --colors"
+    "start": "webpack --progress --colors"
   },
   "keywords": [],
   "author": "breakinferno",
@@ -13,5 +13,14 @@
     "axios": "^0.18.0",
     "node-rsa": "^1.0.1",
     "node-uuid": "^1.4.8"
+  },
+  "devDependencies": {
+    "webpack": "^4.19.1",
+    "webpack-cli": "^3.1.0",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.4",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.6.1"
   }
 }

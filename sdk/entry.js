@@ -1,2 +1,2 @@
-const entry = require('./lib/main.min')
+const entry = require('./lib/LFSDK.js')
 module.exports = entry
