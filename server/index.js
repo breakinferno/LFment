@@ -3,14 +3,9 @@ const static = require('koa-static')
 const path = require('path')
 const fs = require('fs')
 const app = new Koa()
-<<<<<<< HEAD
-const mdzz = require('../sdk/src/index')
-const SDK = require('../sdk/entry.js')
+// const mdzz = require('../sdk/src/index')
+const SDK = require('../sdk/entry.js').sdk
 console.log(SDK);
-=======
-const SDK = require('../sdk/index').sdk
-// console.log(SDK);
->>>>>>> 87ebc9aeea1f0d306bd5c1f32400bb582ad23895
 // const axios = require('axios');
 const sdk = new SDK('ld2n7Myo+2rA/EYjrVeK4w==', 'BaH8uHyPTGz7WJAIB8IXIg==');
 

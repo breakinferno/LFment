@@ -1,11 +1,13 @@
 const path = require('path')
-
+/**
+ * 考虑将axios和一些库external,不一起打包。
+ */
 module.exports = {
   entry: {
     LFSDK:  './src/index.js'
   },
   // devtool: 'source-map',
-  mode: 'development',
+  mode: 'production',
   target: 'node',
   output: {
     path: path.join(__dirname, 'lib'),
@@ -27,9 +29,9 @@ module.exports = {
     ],
   },
   optimization: {
-    splitChunks: {
-      chunks: 'all'
-    }
+    // splitChunks: {
+    //   chunks: 'all'
+    // }
   },
   performance: {
     hints: false
